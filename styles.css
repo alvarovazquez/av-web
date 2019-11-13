@@ -1,0 +1,113 @@
+@font-face {
+	font-family: 'Noto Serif';
+	src: url('fonts/noto-serif/NotoSerif-Regular.ttf');
+	font-weight: 400;
+}
+@font-face {
+	font-family: 'Noto Serif';
+	src: url('fonts/noto-serif/NotoSerif-Bold.ttf');
+	font-weight: 700;
+}
+@font-face {
+	font-family: 'Noto Serif';
+	src: url('fonts/noto-serif/NotoSerif-LightItalic.ttf');
+	font-weight: 200;
+	font-style: italic;
+}
+
+@font-face {
+	font-family: 'Cutive Mono';
+	src: url('fonts/cutive-mono/CutiveMono-Regular.ttf');
+}
+
+
+* {
+	font-family: 'Noto Serif';
+}
+
+html {
+	height: 100%;
+}
+
+body {
+	height: 100%;
+	margin: 0;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+}
+
+body > header {
+	box-sizing: border-box;
+	padding: 15px 100px;
+	width: 500px;
+}
+body > header > h1 {
+	padding: 0;
+	margin: 0 0 10px 0;
+	font-family: 'Noto Serif';
+	font-weight: bold;
+	font-size: 25px;
+}
+body > header > h2 {
+	padding: 0;
+	margin: 0;
+	font-family: 'Noto Serif';
+	font-weight: normal;
+	font-style: italic;
+	font-size: 20px;
+}
+body > section {
+	box-sizing: border-box;
+	padding: 15px 100px;
+	width: calc(100% - 500px);
+	height: 100%;
+	padding: 25px;
+}
+body > section > h1 {
+	box-sizing: border-box;
+	font-weight: normal;
+}
+.main-header {
+	text-align: center;
+}
+.avatar {
+	border: 3px solid lightgrey;
+	border-radius: 50%;
+	padding: 1px;
+	width: 150px;
+	margin-bottom: 15px;
+}
+
+.terminal {
+	border-left: 2px solid lightgrey;
+	background-color: black;
+	color: lime;
+	font-family: 'Cutive Mono';
+	font-size: 20px;
+	overflow: auto;
+	word-break: break-all;
+}
+.terminal * {
+	font-family: 'Cutive Mono';
+}
+.terminal .content p {
+	margin: 0 0 20px 0;
+}
+.terminal .content p:last-child {
+	margin-bottom: 0;
+}
+.terminal .content p:not(.output) {
+	color: white;
+}
+.terminal .content p:not(.output):before {
+	content: "$[~alvaro-vazquez-cli]> ";
+	color: lime;
+}
+.terminal .content .cursor {
+	display: inline-block;
+	height: 17px;
+	width: 11px;
+	margin-bottom: -2px;
+	background-color: lime;
+}
