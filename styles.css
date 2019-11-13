@@ -93,6 +93,7 @@ body > section > h1 {
 }
 .terminal .content p {
 	margin: 0 0 20px 0;
+	word-break: break-word;
 }
 .terminal .content p:last-child {
 	margin-bottom: 0;

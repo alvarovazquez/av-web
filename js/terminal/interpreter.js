@@ -1,5 +1,6 @@
 const SOCIAL_URLS = {
-	linkedin: 'https://www.linkedin.com/in/alvarovazquezgarcia/'
+	linkedin: 'https://www.linkedin.com/in/alvarovazquezgarcia',
+	github: 'https://github.com/alvarovazquez'
 };
 
 const COMMAND_MAP_ERROR_KEY = '~error';
@@ -10,7 +11,8 @@ const COMMAND_MAP = {
 			'Here is the list of available commands:',
 			'help: You know this one :).',
 			'contact: Shows the contact information in case you want to reach me.',
-			'linkedin: Opens my Linkedin profile in a new tab'
+			'linkedin: Opens my Linkedin profile in a new tab',
+			'github: Opens my GitHub profile in a new tab'
 		]
 	},
 	'contact': {
@@ -23,6 +25,12 @@ const COMMAND_MAP = {
 			'Opening Linkedin profile...'
 		],
 		action: () => window.open(SOCIAL_URLS.linkedin, '_blank')
+	},
+	'github': {
+		output: [
+			'Opening GitHub profile...'
+		],
+		action: () => window.open(SOCIAL_URLS.github, '_blank')
 	},
 	'~error': {
 		output: [
