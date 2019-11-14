@@ -14,16 +14,22 @@ function setFocus() {
 	$terminal.querySelector(INPUT_QUERY_SELECTOR).focus();
 }
 
-function moveCursor(direction) {
-	const $line = $cursor.parentNode;
-	const $userInput = $terminal.querySelector(INPUT_QUERY_SELECTOR);
-	const userInputText = $userInput.value;
-	let $cursorPlaceholder;
-	let newHtml;
-	let beforeCursorText;
-	let cursorChar;
-	let afterCursorText;
+function updateUserInputHtml() {
+	const userInputText = $terminal.querySelector(INPUT_QUERY_SELECTOR).value;
+	if (currentCursorPos === 0) {
+		$cursor.parentNode.innerHTML = `${userInputText}<span class="cursor"></span>`;
+	} else {
+		const beforeCursorText = userInputText.substring(0, userInputText.length + currentCursorPos);
+		const cursorChar = userInputText.substring(userInputText.length + currentCursorPos, userInputText.length + currentCursorPos + 1);
+		const afterCursorText = userInputText.substring(userInputText.length + currentCursorPos + 1, userInputText.length);
 
+		$cursor.parentNode.innerHTML = `${beforeCursorText}<span class="cursor">${cursorChar}</span>${afterCursorText}`;
+	}
+
+	$cursor = $terminal.querySelector(CURSOR_QUERY_SELECTOR);
+}
+
+function moveCursor(direction) {
 	if (direction === DIRECTION_RIGHT) {
 		currentCursorPos++;
 	} else if (direction === DIRECTION_LEFT) {
@@ -32,15 +38,7 @@ function moveCursor(direction) {
 		return;
 	}
 
-	beforeCursorText = userInputText.substring(0, userInputText.length + currentCursorPos);
-	cursorChar = userInputText.substring(userInputText.length + currentCursorPos, userInputText.length + currentCursorPos + 1);
-	afterCursorText = userInputText.substring(userInputText.length + currentCursorPos + 1, userInputText.length);
-
-	newHtml = `${beforeCursorText}<span class="cursor-placeholder"></span>${afterCursorText}`;
-	$line.innerHTML = newHtml;
-	$cursorPlaceholder = $line.querySelector('.cursor-placeholder');
-	$cursor.innerHTML = cursorChar;
-	$line.replaceChild($cursor, $cursorPlaceholder);
+	updateUserInputHtml();
 }
 
 function moveCursorLeft() {
@@ -61,8 +59,9 @@ function moveCursorRight() {
 function resetInput() {
 	const $input = $terminal.querySelector(INPUT_QUERY_SELECTOR);
 
-	$input.value = '';
 	currentCursorPos = 0;
+	updateUserInputHtml();
+	$input.value = '';
 }
 
 function autoScroll() {
@@ -101,15 +100,6 @@ function sendInput() {
 	addUserFeddback();
 }
 
-function updateUserInput(userInputText) {
-	const $userInput = $terminal.querySelector(INPUT_QUERY_SELECTOR);
-	const $line = $cursor.parentNode;
-
-	$userInput.value = userInputText;
-	$line.innerHTML = userInputText
-	$line.appendChild($cursor);
-}
-
 function initEvents() {
 	document.addEventListener('click', function (event) {
 		setFocus()
@@ -117,36 +107,49 @@ function initEvents() {
 
 	document.addEventListener('keyup', function (event) {
 		const $userInput = $terminal.querySelector(INPUT_QUERY_SELECTOR);
-		let userInputText;
+		let textBeforeCursor;
+		let textAfterCursor;
 
 		if (event.key === 'Enter') {
 			sendInput();
 			return;
-		}
-		if (event.key === 'Backspace') {
-			userInputText = $userInput.value.substring(0, $userInput.value.length - 1);
-			updateUserInput(userInputText);
+		} else if (event.key === 'Backspace') {
+			textBeforeCursor = $userInput.value.substring(0, $userInput.value.length + currentCursorPos - 1);
+			textAfterCursor = $userInput.value.substring($userInput.value.length + currentCursorPos, $userInput.value.length);
+			$userInput.value = `${textBeforeCursor}${textAfterCursor}`;
+			updateUserInputHtml();
+
 			return;
-		}
-		if (event.key === 'ArrowLeft') {
+		} else if (event.key === 'Delete') {
+			textBeforeCursor = $userInput.value.substring(0, $userInput.value.length + currentCursorPos);
+			textAfterCursor = $userInput.value.substring($userInput.value.length + currentCursorPos + 1, $userInput.value.length);
+			$userInput.value = `${textBeforeCursor}${textAfterCursor}`;
+			moveCursorRight();
+			updateUserInputHtml();
+
+			return;
+		} else if (event.key === 'ArrowLeft') {
 			moveCursorLeft();
 			return;
 		} else if (event.key === 'ArrowRight') {
 			moveCursorRight();
 			return;
 		}
+
 		if (event.key.length > 1) {
 			return;
 		}
 
-		userInputText = $userInput.value + event.key;
-		updateUserInput(userInputText);
+		textBeforeCursor = $userInput.value.substring(0, $userInput.value.length + currentCursorPos);
+		textAfterCursor = $userInput.value.substring($userInput.value.length + currentCursorPos, $userInput.value.length);
+		$userInput.value = $userInput.value = `${textBeforeCursor}${event.key}${textAfterCursor}`;
+		updateUserInputHtml();
 	});
 }
 
 export default function init($term) {
 	$terminal = $term;
-	$cursor = $terminal.querySelector(CURSOR_QUERY_SELECTOR)
+	$cursor = $terminal.querySelector(CURSOR_QUERY_SELECTOR);
 
 	initEvents();
 	setFocus();
