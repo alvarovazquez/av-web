@@ -9,9 +9,9 @@ export function interpret(command) {
 				commandInfo.action();
 			}
 	
-			return commandInfo.output;
+			return commandInfo.output();
 		}
 	
-		return COMMAND_MAP[COMMAND_MAP_ERROR_KEY].output;
+		return COMMAND_MAP[COMMAND_MAP_ERROR_KEY].output();
 	}
 }
