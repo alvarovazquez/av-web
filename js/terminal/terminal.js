@@ -56,6 +56,16 @@ function sendInput($terminal) {
 	addUserFeddback($terminal);
 }
 
+function updateUserInput($terminal, userInputText) {
+	const $userInput = $terminal.querySelector(INPUT_QUERY_SELECTOR);
+	const $cursor = getCursor($terminal);
+	const $line = $cursor.parentNode;
+
+	$userInput.value = userInputText;
+	$line.innerHTML = userInputText
+	$line.appendChild($cursor);
+}
+
 function initEvents($terminal) {
 	document.addEventListener('click', function (event) {
 		setFocus($terminal)
@@ -63,7 +73,6 @@ function initEvents($terminal) {
 
 	document.addEventListener('keyup', function (event) {
 		const $userInput = $terminal.querySelector(INPUT_QUERY_SELECTOR);
-		const $cursor = getCursor($terminal);
 		let userInputText;
 
 		if (event.key === 'Enter') {
@@ -71,25 +80,16 @@ function initEvents($terminal) {
 			return;
 		}
 		if (event.key === 'Backspace') {
-			$userInput.value = $userInput.value.substring(0, $userInput.value - 1)
+			userInputText = $userInput.value.substring(0, $userInput.value.length - 1);
+			updateUserInput($terminal, userInputText);
 			return;
 		}
 		if (event.key.length > 1) {
 			return;
 		}
 
-		// TODO Doesn't work
-		// if (event.key === 'Backspace') {
-		// 	$userInput.value = $userInput.value.substring(0, $userInput.value - 1),
-		// 	userInputText = document.createTextNode(event.key);
-		// } else {
-		// 	$userInput.value += event.key,
-		// 	userInputText = document.createTextNode(event.key);
-		// }
-
-		$userInput.value += event.key,
-		userInputText = document.createTextNode(event.key);
-		$cursor.parentNode.insertBefore(userInputText, $cursor);
+		userInputText = $userInput.value + event.key;
+		updateUserInput($terminal, userInputText);
 	});
 }
 
