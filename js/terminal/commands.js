@@ -6,34 +6,51 @@ const SOCIAL_URLS = {
 export const COMMAND_MAP_ERROR_KEY = '~error';
 export const COMMAND_MAP = {
 	'help': {
-		output: [
-			'This is the \'help\' command',
-			'Here is the list of available commands:',
-			'help: You know this one :).',
-			'contact: Shows the contact information in case you want to reach me.',
-			'linkedin: Opens my Linkedin profile in a new tab',
-			'github: Opens my GitHub profile in a new tab'
-		]
+		description: 'You know this one :).',
+		output: () => {
+			const header = [
+				'This is the \'help\' command',
+				'Here is the list of available commands:'
+			];
+
+			let output = header.concat(
+				Object.keys(COMMAND_MAP).reduce((acc, commandName) => {
+					const command = COMMAND_MAP[commandName];
+
+					if (!command.hidden) {
+						acc.push(`${commandName}: ${command.description}`);
+					}
+
+					return acc;
+				}, [])
+			);
+
+			return output;
+		}
 	},
 	'contact': {
-		output: [
+		description: 'Shows the contact information in case you want to reach me.',
+		output: () => [
 			'TBI'
 		]
 	},
 	'linkedin': {
-		output: [
+		description: 'Opens my Linkedin profile in a new tab.',
+		output: () => [
 			'Opening Linkedin profile...'
 		],
 		action: () => window.open(SOCIAL_URLS.linkedin, '_blank')
 	},
 	'github': {
-		output: [
+		description: 'Opens my GitHub profile in a new tab.',
+		output: () => [
 			'Opening GitHub profile...'
 		],
 		action: () => window.open(SOCIAL_URLS.github, '_blank')
 	},
 	'~error': {
-		output: [
+		hidden: true,
+		output: () => [
 			'Command not found',
 			'Use \'help\' for a list of available commands.'
 		]
