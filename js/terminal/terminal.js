@@ -10,9 +10,8 @@ function setFocus() {
 	$terminal.querySelector(INPUT_QUERY_SELECTOR).focus();
 }
 
-
 function resetInput() {
-	let $input = $terminal.querySelector(INPUT_QUERY_SELECTOR);
+	const $input = $terminal.querySelector(INPUT_QUERY_SELECTOR);
 
 	$input.value = '';
 }
@@ -22,19 +21,19 @@ function autoScroll() {
 }
 
 function addUserFeddback() {
-	let $newUserInputFeedback = document.createElement('p'),
-		$content = $terminal.querySelector(CONTENT_QUERY_SELECTOR),
-		$cursor = getCursor($terminal);
+	const $newUserInputFeedback = document.createElement('p');
+	const $content = $terminal.querySelector(CONTENT_QUERY_SELECTOR);
+	const $cursor = getCursor($terminal);
 
-		$newUserInputFeedback.appendChild($cursor);
-		$content.appendChild($newUserInputFeedback);
+	$newUserInputFeedback.appendChild($cursor);
+	$content.appendChild($newUserInputFeedback);
 
-		autoScroll();
+	autoScroll();
 }
 
 function drawCommandOutput(output) {
-	let $content = $terminal.querySelector(CONTENT_QUERY_SELECTOR),
-		$line;
+	const $content = $terminal.querySelector(CONTENT_QUERY_SELECTOR);
+	let $line;
 
 	output && output.length && output.forEach(function (textLine) {
 		$line = document.createElement('p');
@@ -47,13 +46,10 @@ function drawCommandOutput(output) {
 
 function sendInput() {
 	const command = $terminal.querySelector(INPUT_QUERY_SELECTOR).value;
-	let commandOutput;
+	const commandOutput = interpret(command);
 
 	resetInput();
-
-	commandOutput = interpret(command);
 	drawCommandOutput(commandOutput);
-
 	addUserFeddback();
 }
 

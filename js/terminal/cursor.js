@@ -22,7 +22,7 @@ export function getCursor($terminal) {
 }
 
 export function initCursor($terminal) {
-	let $cursor = $terminal.querySelector(CURSOR_QUERY_SELECTOR);
+	const $cursor = $terminal.querySelector(CURSOR_QUERY_SELECTOR);
 
 	showCursor($cursor);
 }
