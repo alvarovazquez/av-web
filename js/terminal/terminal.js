@@ -4,23 +4,24 @@ import { interpret } from './interpreter.js';
 const INPUT_QUERY_SELECTOR = '.user-input';
 const CONTENT_QUERY_SELECTOR = '.content';
 
-function setFocus($terminal) {
+let $terminal;
+
+function setFocus() {
 	$terminal.querySelector(INPUT_QUERY_SELECTOR).focus();
 }
 
 
-function resetInput($terminal) {
+function resetInput() {
 	let $input = $terminal.querySelector(INPUT_QUERY_SELECTOR);
 
 	$input.value = '';
 }
 
-function autoScroll($terminal) {
+function autoScroll() {
 	$terminal.scrollTo(0, $terminal.scrollHeight);
 }
 
-
-function addUserFeddback($terminal) {
+function addUserFeddback() {
 	let $newUserInputFeedback = document.createElement('p'),
 		$content = $terminal.querySelector(CONTENT_QUERY_SELECTOR),
 		$cursor = getCursor($terminal);
@@ -28,10 +29,10 @@ function addUserFeddback($terminal) {
 		$newUserInputFeedback.appendChild($cursor);
 		$content.appendChild($newUserInputFeedback);
 
-		autoScroll($terminal);
+		autoScroll();
 }
 
-function drawCommandOutput($terminal, output) {
+function drawCommandOutput(output) {
 	let $content = $terminal.querySelector(CONTENT_QUERY_SELECTOR),
 		$line;
 
@@ -44,19 +45,19 @@ function drawCommandOutput($terminal, output) {
 	});
 }
 
-function sendInput($terminal) {
+function sendInput() {
 	const command = $terminal.querySelector(INPUT_QUERY_SELECTOR).value;
 	let commandOutput;
 
-	resetInput($terminal);
+	resetInput();
 
 	commandOutput = interpret(command);
-	drawCommandOutput($terminal, commandOutput);
+	drawCommandOutput(commandOutput);
 
-	addUserFeddback($terminal);
+	addUserFeddback();
 }
 
-function updateUserInput($terminal, userInputText) {
+function updateUserInput(userInputText) {
 	const $userInput = $terminal.querySelector(INPUT_QUERY_SELECTOR);
 	const $cursor = getCursor($terminal);
 	const $line = $cursor.parentNode;
@@ -66,9 +67,9 @@ function updateUserInput($terminal, userInputText) {
 	$line.appendChild($cursor);
 }
 
-function initEvents($terminal) {
+function initEvents() {
 	document.addEventListener('click', function (event) {
-		setFocus($terminal)
+		setFocus()
 	});
 
 	document.addEventListener('keyup', function (event) {
@@ -76,12 +77,12 @@ function initEvents($terminal) {
 		let userInputText;
 
 		if (event.key === 'Enter') {
-			sendInput($terminal);
+			sendInput();
 			return;
 		}
 		if (event.key === 'Backspace') {
 			userInputText = $userInput.value.substring(0, $userInput.value.length - 1);
-			updateUserInput($terminal, userInputText);
+			updateUserInput(userInputText);
 			return;
 		}
 		if (event.key.length > 1) {
@@ -89,12 +90,14 @@ function initEvents($terminal) {
 		}
 
 		userInputText = $userInput.value + event.key;
-		updateUserInput($terminal, userInputText);
+		updateUserInput(userInputText);
 	});
 }
 
-export default function init($terminal) {
+export default function init($term) {
+	$terminal = $term;
+
 	initCursor($terminal);
-	initEvents($terminal);
-	setFocus($terminal);
+	initEvents();
+	setFocus();
 };
