@@ -1,19 +1,68 @@
-import { initCursor, getCursor } from './cursor.js';
 import { interpret } from './interpreter.js';
 
 const INPUT_QUERY_SELECTOR = '.user-input';
+const CURSOR_QUERY_SELECTOR = '.cursor';
 const CONTENT_QUERY_SELECTOR = '.content';
+const DIRECTION_LEFT = 'LEFT';
+const DIRECTION_RIGHT = 'RIGHT';
 
 let $terminal;
+let $cursor;
+let currentCursorPos = 0;
 
 function setFocus() {
 	$terminal.querySelector(INPUT_QUERY_SELECTOR).focus();
+}
+
+function moveCursor(direction) {
+	const $line = $cursor.parentNode;
+	const $userInput = $terminal.querySelector(INPUT_QUERY_SELECTOR);
+	const userInputText = $userInput.value;
+	let $cursorPlaceholder;
+	let newHtml;
+	let beforeCursorText;
+	let cursorChar;
+	let afterCursorText;
+
+	if (direction === DIRECTION_RIGHT) {
+		currentCursorPos++;
+	} else if (direction === DIRECTION_LEFT) {
+		currentCursorPos--;
+	} else {
+		return;
+	}
+
+	beforeCursorText = userInputText.substring(0, userInputText.length + currentCursorPos);
+	cursorChar = userInputText.substring(userInputText.length + currentCursorPos, userInputText.length + currentCursorPos + 1);
+	afterCursorText = userInputText.substring(userInputText.length + currentCursorPos + 1, userInputText.length);
+
+	newHtml = `${beforeCursorText}<span class="cursor-placeholder"></span>${afterCursorText}`;
+	$line.innerHTML = newHtml;
+	$cursorPlaceholder = $line.querySelector('.cursor-placeholder');
+	$cursor.innerHTML = cursorChar;
+	$line.replaceChild($cursor, $cursorPlaceholder);
+}
+
+function moveCursorLeft() {
+	const $userInput = $terminal.querySelector(INPUT_QUERY_SELECTOR);
+	const userInputText = $userInput.value;
+
+	if (-1 * currentCursorPos < userInputText.length) {
+		moveCursor(DIRECTION_LEFT);
+	}
+}
+
+function moveCursorRight() {
+	if (currentCursorPos < 0) {
+		moveCursor(DIRECTION_RIGHT);
+	}
 }
 
 function resetInput() {
 	const $input = $terminal.querySelector(INPUT_QUERY_SELECTOR);
 
 	$input.value = '';
+	currentCursorPos = 0;
 }
 
 function autoScroll() {
@@ -23,7 +72,6 @@ function autoScroll() {
 function addUserFeddback() {
 	const $newUserInputFeedback = document.createElement('p');
 	const $content = $terminal.querySelector(CONTENT_QUERY_SELECTOR);
-	const $cursor = getCursor($terminal);
 
 	$newUserInputFeedback.appendChild($cursor);
 	$content.appendChild($newUserInputFeedback);
@@ -55,7 +103,6 @@ function sendInput() {
 
 function updateUserInput(userInputText) {
 	const $userInput = $terminal.querySelector(INPUT_QUERY_SELECTOR);
-	const $cursor = getCursor($terminal);
 	const $line = $cursor.parentNode;
 
 	$userInput.value = userInputText;
@@ -81,6 +128,13 @@ function initEvents() {
 			updateUserInput(userInputText);
 			return;
 		}
+		if (event.key === 'ArrowLeft') {
+			moveCursorLeft();
+			return;
+		} else if (event.key === 'ArrowRight') {
+			moveCursorRight();
+			return;
+		}
 		if (event.key.length > 1) {
 			return;
 		}
@@ -92,8 +146,8 @@ function initEvents() {
 
 export default function init($term) {
 	$terminal = $term;
+	$cursor = $terminal.querySelector(CURSOR_QUERY_SELECTOR)
 
-	initCursor($terminal);
 	initEvents();
 	setFocus();
 };
