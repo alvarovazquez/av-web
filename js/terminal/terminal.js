@@ -101,16 +101,20 @@ function sendInput() {
 }
 
 function initEvents() {
-	document.addEventListener('click', function (event) {
+	document.addEventListener('click', event => {
 		setFocus()
 	});
 
-	document.addEventListener('keyup', function (event) {
+	document.addEventListener('keydown', event => {
 		const $userInput = $terminal.querySelector(INPUT_QUERY_SELECTOR);
 		let textBeforeCursor;
 		let textAfterCursor;
 
-		if (event.key === 'Enter') {
+		if (event.isComposing || event.keyCode === 229) {
+			return;
+		} else if (event.ctrlKey || event.altKey) {
+			return;
+		} else if (event.key === 'Enter') {
 			sendInput();
 			return;
 		} else if (event.key === 'Backspace') {
