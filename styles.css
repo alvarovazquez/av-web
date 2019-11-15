@@ -84,7 +84,7 @@ body > section > h1 {
 	background-color: black;
 	color: lime;
 	font-family: 'Cutive Mono';
-	font-size: 20px;
+	font-size: 18px;
 	overflow: auto;
 	word-break: break-all;
 }
@@ -104,6 +104,12 @@ body > section > h1 {
 .terminal .content p:not(.output):before {
 	content: "$[~alvaro-vazquez-cli]> ";
 	color: rgb(0, 255, 0);
+}
+.terminal .content p:not(.output) + p.output {
+	margin-top: 40px
+}
+.terminal .content p.output + p:not(.output) {
+	margin-top: 40px
 }
 .terminal .content p a {
 	color: rgb(0, 255, 0);
