@@ -105,12 +105,16 @@ body > section > h1 {
 	content: "$[~alvaro-vazquez-cli]> ";
 	color: rgb(0, 255, 0);
 }
+.terminal .content p a {
+	color: rgb(0, 255, 0);
+	text-decoration: underline;
+}
 .terminal .content .cursor {
 	display: inline-block;
 	height: 17px;
 	width: 11px;
 	margin-bottom: -2px;
-	background-color: rgba(0, 255, 0);
+	background-color: rgba(0, 255, 0, 1);
 	color: black;
 	animation: blinker 1s step-end infinite;
 }

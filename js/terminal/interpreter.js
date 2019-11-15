@@ -1,4 +1,4 @@
-import { COMMAND_MAP,COMMAND_MAP_ERROR_KEY } from './commands.js';
+import { COMMAND_MAP,COMMAND_MAP_ERROR_KEY } from './commands/commands.js';
 
 export function interpret(command) {
 	const commandInfo = COMMAND_MAP[command];
