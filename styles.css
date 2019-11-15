@@ -91,6 +91,18 @@ body > section > h1 {
 .terminal * {
 	font-family: 'Cutive Mono';
 }
+.terminal .content table {
+	margin-left: 25px;
+}
+.terminal .content table td {
+	padding: 0 15px 0 0;
+}
+.terminal .content table td:first-child {
+	min-width: 90px;
+}
+.terminal .content table td:last-child {
+	padding-right: 0;
+}
 .terminal .content p {
 	margin: 0 0 20px 0;
 	word-break: break-word;

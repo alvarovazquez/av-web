@@ -92,8 +92,10 @@ function drawCommandOutput(output) {
 }
 
 function sendInput() {
-	const command = $terminal.querySelector(INPUT_QUERY_SELECTOR).value;
-	const commandOutput = interpret(command);
+	const input = $terminal.querySelector(INPUT_QUERY_SELECTOR).value.split(' ');
+	const command = input[0];
+	const args = input.slice(1, input.length);
+	const commandOutput = interpret(command, args);
 
 	resetInput();
 	drawCommandOutput(commandOutput);

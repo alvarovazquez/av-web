@@ -9,23 +9,67 @@ export const COMMAND_MAP_ERROR_KEY = '~error';
 export const COMMAND_MAP = {
 	'help': {
 		description: 'You know this one :).',
-		output: () => {
+		arguments: [
+			{
+				name: '&lt;command name&gt;',
+				description: 'The name of the command you need help with.'
+			}
+		],
+		output: (args) => {
 			const header = [
 				'This is the \'help\' command',
 				'Here is the list of available commands:'
 			];
+			const commandName = args && args[0];
+			const errorOutput = [
+				`Command <strong>${commandName}</strong> not found.`,
+				'Use <strong>help</strong> to get a list of all available commands.'
+			];
+			let output;
 
-			let output = header.concat(
-				Object.keys(COMMAND_MAP).reduce((acc, commandName) => {
-					const command = COMMAND_MAP[commandName];
-
-					if (!command.hidden) {
-						acc.push(`${commandName}: ${command.description}`);
+			if (commandName) {
+				let command = COMMAND_MAP[commandName];
+				if (command) {
+					let args;
+					if (command.arguments && command.arguments.length) {
+						args = [
+							'Arguments:',
+							`<table>
+								<tbody>
+									${command.arguments.map(arg =>
+										`<tr><td><em>${arg.name}</em></td><td>${arg.description}</td></tr>`
+									).join('')}
+								</tbody>
+							</table>`
+						];
 					}
-
-					return acc;
-				}, [])
-			);
+					output = [
+						command.description,
+						...args
+					];
+				} else {
+					output = errorOutput;
+				}
+			} else {
+				output = header;
+				output.push(
+					`<table>
+						<tbody>
+							${
+								Object.keys(COMMAND_MAP).reduce((acc, key) => {
+									const command = COMMAND_MAP[key];
+				
+									if (!command.hidden) {
+										acc += `<tr><td><em>${key}</em></td><td>${command.description}</td></tr>`;
+									}
+				
+									return acc;
+								}, '')
+							}
+						</tbody>
+					</table>`
+				);
+			}
 
 			return output;
 		}
