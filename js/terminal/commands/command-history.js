@@ -1,7 +1,23 @@
 const HISTORY_LIMIT = 100;
+const LOCAL_STORAGE_KEY = 'commandHistory';
+const storedHistory = localStorage.getItem(LOCAL_STORAGE_KEY);
+
+// Prevention in case data is corrupt in localStorage
+let commands;
+try {
+	commands = storedHistory ? JSON.parse(storedHistory) : [];
+	if (!commands.length) {
+		localStorage.removeItem(LOCAL_STORAGE_KEY);
+		commands = [];
+	}
+} catch (e) {
+	commands = [];
+	localStorage.removeItem(LOCAL_STORAGE_KEY);
+}
+
 const commandHistory = {
 	cursorPos: 0,
-	commands: []
+	commands
 };
 
 export function getPreviousCommandInHistory() {
@@ -28,5 +44,6 @@ export function addCommandToHistory(command) {
 			commandHistory.commands.shift();
 		}
 		commandHistory.commands.push(command);
+		localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(commandHistory.commands));
 	}
 }
