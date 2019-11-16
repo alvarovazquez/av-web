@@ -52,6 +52,13 @@ function resetInput() {
 	$input.value = '';
 }
 
+function emptyInput() {
+	const $input = $terminal.querySelector(INPUT_QUERY_SELECTOR);
+
+	$input.value = '';
+	resetInput();
+}
+
 function autoScroll() {
 	$terminal.scrollTo(0, $terminal.scrollHeight);
 }
@@ -121,6 +128,9 @@ function initEvents() {
 			moveCursorRight();
 			updateUserInputHtml();
 
+			return;
+		} else if (event.key === 'Escape') {
+			emptyInput();
 			return;
 		} else if (event.key === 'ArrowLeft') {
 			moveCursorLeft();
