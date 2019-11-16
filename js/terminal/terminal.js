@@ -141,8 +141,8 @@ function initEvents() {
 
 			return;
 		} else if (event.key === 'Escape') {
-			emptyInput();
 			resetCommandHistory();
+			emptyInput();
 			return;
 		} else if (event.key === 'ArrowLeft') {
 			moveCursorLeft();
