@@ -3,8 +3,6 @@ import { interpret } from './interpreter.js';
 const INPUT_QUERY_SELECTOR = '.user-input';
 const CURSOR_QUERY_SELECTOR = '.cursor';
 const CONTENT_QUERY_SELECTOR = '.content';
-const DIRECTION_LEFT = 'LEFT';
-const DIRECTION_RIGHT = 'RIGHT';
 
 let $terminal;
 let $cursor;
@@ -29,30 +27,20 @@ function updateUserInputHtml() {
 	$cursor = $terminal.querySelector(CURSOR_QUERY_SELECTOR);
 }
 
-function moveCursor(direction) {
-	if (direction === DIRECTION_RIGHT) {
-		currentCursorPos++;
-	} else if (direction === DIRECTION_LEFT) {
-		currentCursorPos--;
-	} else {
-		return;
-	}
-
-	updateUserInputHtml();
-}
-
 function moveCursorLeft() {
 	const $userInput = $terminal.querySelector(INPUT_QUERY_SELECTOR);
 	const userInputText = $userInput.value;
 
 	if (-1 * currentCursorPos < userInputText.length) {
-		moveCursor(DIRECTION_LEFT);
+		currentCursorPos--;
+		updateUserInputHtml();
 	}
 }
 
 function moveCursorRight() {
 	if (currentCursorPos < 0) {
-		moveCursor(DIRECTION_RIGHT);
+		currentCursorPos++;
+		updateUserInputHtml();
 	}
 }
 
