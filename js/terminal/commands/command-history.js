@@ -1,3 +1,4 @@
+const HISTORY_LIMIT = 100;
 const commandHistory = {
 	cursorPos: 0,
 	commands: []
@@ -22,6 +23,10 @@ export function resetCommandHistory() {
 }
 
 export function addCommandToHistory(command) {
-	commandHistory.commands.push(command);
-	commandHistory.cursorPos = 0;
+	if (command && command.length) {
+		if (commandHistory.commands.length === HISTORY_LIMIT) {
+			commandHistory.commands.shift();
+		}
+		commandHistory.commands.push(command);
+	}
 }
