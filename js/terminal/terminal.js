@@ -1,4 +1,10 @@
 import { interpret } from './interpreter.js';
+import {
+	addCommandToHistory,
+	resetCommandHistory,
+	getNextCommandInHistory,
+	getPreviousCommandInHistory
+} from './commands/command-history.js';
 
 const INPUT_QUERY_SELECTOR = '.user-input';
 const CURSOR_QUERY_SELECTOR = '.cursor';
@@ -64,6 +70,13 @@ function resetInput() {
 	$input.value = '';
 }
 
+function emptyInput() {
+	const $input = $terminal.querySelector(INPUT_QUERY_SELECTOR);
+
+	$input.value = '';
+	resetInput();
+}
+
 function autoScroll() {
 	$terminal.scrollTo(0, $terminal.scrollHeight);
 }
@@ -92,11 +105,14 @@ function drawCommandOutput(output) {
 }
 
 function sendInput() {
-	const input = $terminal.querySelector(INPUT_QUERY_SELECTOR).value.split(' ');
+	const userInput = $terminal.querySelector(INPUT_QUERY_SELECTOR).value;
+	const input = userInput.split(' ');
 	const command = input[0];
 	const args = input.slice(1, input.length);
 	const commandOutput = interpret(command, args);
 
+	addCommandToHistory(userInput);
+	resetCommandHistory();
 	resetInput();
 	drawCommandOutput(commandOutput);
 	addUserFeddback();
@@ -111,12 +127,14 @@ function initEvents() {
 		const $userInput = $terminal.querySelector(INPUT_QUERY_SELECTOR);
 		let textBeforeCursor;
 		let textAfterCursor;
+		let commandInHistory;
 
 		if (event.isComposing || event.keyCode === 229) {
 			return;
 		} else if (event.ctrlKey || event.altKey) {
 			return;
 		} else if (event.key === 'Enter') {
+			resetCommandHistory();
 			sendInput();
 			return;
 		} else if (event.key === 'Backspace') {
@@ -139,6 +157,18 @@ function initEvents() {
 			return;
 		} else if (event.key === 'ArrowRight') {
 			moveCursorRight();
+			return;
+		} else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+			event.preventDefault();
+			commandInHistory =
+				event.key === 'ArrowUp' ?
+					getNextCommandInHistory() :
+					getPreviousCommandInHistory();
+
+			if (commandInHistory) {
+				$userInput.value = commandInHistory;
+				updateUserInputHtml();
+			}
 			return;
 		}
 
