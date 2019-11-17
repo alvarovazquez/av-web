@@ -114,8 +114,16 @@ body > section > h1 {
 	color: white;
 }
 .terminal .content p:not(.output):before {
-	content: "$[~alvaro-vazquez-cli]> ";
 	color: rgb(0, 255, 0);
+}
+.terminal .content p.command:before {
+	content: "$[~alvaro-vazquez-cli]> ";
+}
+.terminal .content p.reverse-search:before {
+	content: "$(reverse search)> ";
+}
+.terminal .content p.reverse-search-failed:before {
+	content: "$(reverse search failed)> ";
 }
 .terminal .content p:not(.output) + p.output {
 	margin-top: 40px
